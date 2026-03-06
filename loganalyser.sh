@@ -1,9 +1,30 @@
 #/bin/bash
+# log_analyser.sh
+# Purpose: Analyse system logs for errors or warnings with proper error handling
+# Usage: ./loganalyser.sh [optional-logfile-path]
 
-# This script is for a log analyser. It will count errors and show recent ones.
+# Exit immediately if any command fails, if any variable is undefined or if any command in a pipe fails
+set -euo pipefail
 
-LOGFILE="/var/log/syslog"
+# Set the logfile path - use first argument if provided, otherwise default to /var/sys/syslog
+LOGFILE="${1:-/var/log/syslog}"
 OUTPUT="log_report.txt"
+
+# Check if the log file exists at the specified path
+if [ ! -f "$LOGFILE" ];
+then
+  # Send error message to stderr (>&2) instead of stdout
+  echo "Error: Log file not found: $LOGFILE" >&2
+  # Exit with error code 1 to indicate failure
+  exit 1
+fi
+
+# Check if we have permission to read the log file
+if [ ! -r "$LOGFILE" ];
+then 
+  echo "Error: Cannot read $LOGFILE (permission denied)" >&2
+  exit 1
+fi
 
 # Add title and date timestamp for the log file
 echo "Log Analysis Report - $(date)" > "$OUTPUT"
@@ -11,25 +32,42 @@ echo "Log Analysis Report - $(date)" > "$OUTPUT"
 # Add underlying to split the script title from contents of the log
 echo "================================" >> "$OUTPUT"
 
-# Add a space between the underlining and the next line
+# Show which file was analysed
+echo "File analysed: $LOGFILE" >> "$OUTPUT"
+
+# Add a space between the header and the counts
 echo "" >> "$OUTPUT"
 
-# Add Total Error Count heading
-echo "Total ERROR count:" >> "$OUTPUT"
+# Count total errors in log file - if grep does not find anything, default to 0 instead of failing
+ERROR_COUNT=$(grep -c "ERROR" "$LOGFILE" || echo 0)
 
-# Add Error counts
-grep -c "ERROR" "$LOGFILE" >> "$OUTPUT"
+# Add Error count to the report
+echo "Total ERROR count: $ERROR_COUNT" >> "$OUTPUT"
 
-# Add a space between error count number and next line
+# Count total warnings in the log file - look for WARNING or WARN
+WARN_COUNT=$(grep -c "WARNING\|WARN" "$LOGFILE" || echo 0)
+
+# Add the warning count to the report
+echo "Total WARNING count: $WARN_COUNT" >> "$OUTPUT"
+
+# Add a space between counts and error details
 echo "" >> "$OUTPUT"
 
-# Get the last 10 errors reported in the log
-echo "Last 10 errors:" >> "$OUTPUT"
+# Only Show error details if errors were actually found
+if [ "$ERROR_COUNT" -gt 0 ];
+then
+  # Add heading for error details
+  echo "Last 10 errors:" >> "$OUTPUT"
 
-# Print the last ten errors from the log file
-grep "ERROR" "$LOGFILE" | tail -10 >> "$OUTPUT"
+  # Print the last ten errors from the log file
+  grep "ERROR" "$LOGFILE" | tail -10 >> "$OUTPUT"
+else
+  # If no errors found, print to confirm this
+  echo "No errors found" >> "$OUTPUT"
+fi
 
-# Add comment to show report has been saved to the log file
+# Confirm report has been saved
 echo "Report saved to $OUTPUT"
 
-
+# Exit with success code 0
+exit 0
