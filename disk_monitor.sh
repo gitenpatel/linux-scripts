@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # disk_monitor.sh
 # Purpose: Analyse system disk space and warn if any disk is above 80% full
 # Usage ./disk_monitor.sh
