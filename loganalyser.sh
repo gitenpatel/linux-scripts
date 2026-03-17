@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # log_analyser.sh
 # Purpose: Analyse system logs for errors or warnings with proper error handling
 # Usage: ./loganalyser.sh [optional-logfile-path]
