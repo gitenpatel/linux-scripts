@@ -51,6 +51,20 @@ Monitors disk space usage across mounted filesystems and alerts when usage excee
 
 ---
 
+### process_monitor.sh
+Checks if critical processes are running and reports their status.
+
+**Features:**
+- Monitors multiple processes from a configurable list
+- Exact process name matching
+- Immediate terminal alerts for down processes
+- Detailed status reports
+
+**Usage:**
+```bash
+./process_monitor.sh
+```
+
 ## Requirements
 - Bash 4.0+
 - Standard Unix utilities: `grep`, `tail`, `df`
@@ -66,3 +80,16 @@ chmod +x *.sh
 
 ## Background
 These scripts were written as part of a deliberate upskilling programme alongside Python development, with a focus on production-quality scripting practices — error handling, exit codes, stderr vs stdout, and clear documentation.
+
+## Skills Demonstrated
+
+- Bash scripting with robust error handling
+- System administration and monitoring
+- Log analysis and pattern matching
+- File I/O and report generation
+- Process management
+- Version control with Git
+
+## Author
+
+Giten Patel - Support Engineer with 10+ years in production environments
