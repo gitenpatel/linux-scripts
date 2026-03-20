@@ -78,6 +78,27 @@ cd linux-scripts
 chmod +x *.sh
 ```
 
+### network_monitor.sh
+Monitors network connectivity to critical hosts and services using ICMP ping.
+
+**Features:**
+- Checks multiple hosts from a configurable list
+- 2-second timeout prevents hanging on unreachable hosts
+- Immediate terminal alerts for connectivity failures
+- Detailed status reports with timestamps
+- Exit codes indicate network health status
+
+**Usage:**
+```bash
+./network_monitor.sh
+```
+
+**Common use cases:**
+- Monitoring trading venue connectivity
+- Checking API endpoint availability
+- Validating network infrastructure health
+- Pre-trading system startup checks
+
 ## Background
 These scripts were written as part of a deliberate upskilling programme alongside Python development, with a focus on production-quality scripting practices — error handling, exit codes, stderr vs stdout, and clear documentation.
 
